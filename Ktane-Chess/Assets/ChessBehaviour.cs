@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Text;
 using System;
-using System.Linq;
+ using System.Collections;
+ using System.Linq;
 
 public class ChessBehaviour : MonoBehaviour {
     private enum ChessPieceType {
@@ -391,6 +392,7 @@ public class ChessBehaviour : MonoBehaviour {
             isSolved = true;
             DisplayCoords(-1);
         } else {
+            TwitchPlayStrike = true;
             mBombModule.HandleStrike();
             DisplayCoords(previousNumberSelected);
         }
@@ -463,25 +465,50 @@ public class ChessBehaviour : MonoBehaviour {
         DisplayCoords(0);
     }
 
-    KMSelectable[] ProcessTwitchCommand(string command) {
-        List<KMSelectable> outputList = new List<KMSelectable>();
-        command = command.ToLower();
-        if (command.StartsWith("press")) {
-            command = command.Substring(5);
-            foreach (char c in command) {
-                if (c == ' ') continue;
-                int let = c - 'a';
-                int num = c - '1';
-                if (let >= 0 && let <= 5)
-                    outputList.Add(topButtons[let]);
-                else if (num >= 0 && num <= 5)
-                    outputList.Add(bottomButtons[num]);
-                else
-                    return null;
+    private bool TwitchPlayStrike;
+    IEnumerator ProcessTwitchCommand(string command) {
+        TwitchPlayStrike = false;
+        string[] split = command.ToLowerInvariant().Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries);
 
+        if (split[0] == "cycle" && split.Length == 1) {
+            for (var i = 0; i < 6; i++) {
+                if (isSolved || TwitchPlayStrike)
+                    yield break;
+                yield return bottomButtons[i];
+                yield return new WaitForSeconds(0.1f);
+                yield return bottomButtons[i];
+                yield return new WaitForSeconds(0.9f);
             }
-            return outputList.ToArray();
+            yield return bottomButtons[0];
+            yield return new WaitForSeconds(0.1f);
+            yield return bottomButtons[0];
         }
-        return null;
+       
+        else if (split[0] == "press") {
+            foreach (string str in split.Skip(1)) {
+                foreach (char c in str) {
+                    if (!"abcdef123456".Contains(c))
+                        yield break;
+                }
+            }
+
+            foreach (string str in split.Skip(1)) {
+                foreach (char c in str) {
+                    int let = c - 'a';
+                    int num = c - '1';
+                    if (let >= 0 && let <= 5) {
+                        yield return topButtons[let];
+                        yield return new WaitForSeconds(0.1f);
+                        yield return topButtons[let];
+                    } else {
+                        yield return bottomButtons[num];
+                        yield return new WaitForSeconds(0.1f);
+                        yield return bottomButtons[num];
+                    }
+                    if (isSolved || TwitchPlayStrike)
+                        yield break;
+                }
+            }
+        }
     }
 }
