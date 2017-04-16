@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
@@ -503,5 +504,32 @@ public class MAHModule : MonoBehaviour {
         mBombModule.OnActivate += OnActivate;
         
     }
-    
+
+    KMSelectable[] ProcessTwitchCommand(string command) {
+        List<KMSelectable> buttons = new List<KMSelectable>();
+        string[] split = command.ToLowerInvariant().Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries);
+
+        if (split.Length == 2) {
+            if (split[0] != "press" || (split[1] != "submit" && split[1] != "reset"))
+                return null;
+            buttons.Add(split[1] == "reset" ? ResetButton : AcceptButton);
+        }
+        else if (split.Length == 3) {
+            int pos;
+            if (split[0] != "move" || (split[1] != "white" && split[1] != "black") || !int.TryParse(split[2], out pos))
+                return null;
+            pos %= AMOUNT_OF_CARDS;
+            KMSelectable[] WhiteButtons = SwapWhiteBlack ? LeftCardButtons : RightCardButtons;
+            KMSelectable[] BlackButtons = SwapWhiteBlack ? RightCardButtons : LeftCardButtons;
+            KMSelectable[] SelectedButtons = split[1] == "white" ? WhiteButtons : BlackButtons;
+            int index = pos < 0 ? 0 : 1;
+            pos = Math.Abs(pos);
+            for (int i = 0; i < pos; i++)
+                buttons.Add(SelectedButtons[index]);
+        } else {
+            return null;
+        }
+        return buttons.ToArray();
+    }
+
 }
