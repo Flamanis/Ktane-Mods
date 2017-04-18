@@ -351,10 +351,10 @@ public class Laundry : MonoBehaviour
         };
         Dictionary<string, int> dryIndex = new Dictionary<string, int>()
         {
-            {"tumbledry",0 }, {"noidea",0 },
+            {"tumbledry",0 }, {"0dot",1}, {"0dots",1}, {"noidea",0 },
             {"lowheat",1 }, {"1dot",1 }, {"cyclops",1 },
-            {"mediumheat",2 }, {"2dot",2 }, {"what",2 },
-            {"highheat",3 }, {"3dot",3 }, {"laundryisstupid",3 },
+            {"mediumheat",2 }, {"2dot",2 },{"2dots",2 }, {"what",2 },
+            {"highheat",3 }, {"3dot",3 },{"3dots",3 }, {"laundryisstupid",3 },
             {"no heat",4 }, //{"what",4 },
             {"hangtodry",5 }, {"hangdry",5 }, {"whatthefuckisthis",5 },
             {"dripdry",6 }, {"no",6 },
