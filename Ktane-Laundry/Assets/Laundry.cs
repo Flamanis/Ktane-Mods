@@ -1,5 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
+using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -307,6 +310,209 @@ public class Laundry : MonoBehaviour
         //LeftKnobDisplay.material.SetTexture("_MainTex", WashingDisplay[LeftKnobPos]);
         //RightKnobDisplay.material.SetTexture("_MainTex", DryingDisplay[RightKnobPos]);
         
+    }
+
+    //The only thing on this module that can cause a strike is inserting a coin.  By using IEnumerable, instructions are guaranteed to be
+    //set as desired, even if a strike happens elsewhere on the bomb.  If we just returned KMSelectable[], the instruction sequence would
+    //be interrupted by strikes caused by other modules.
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+        Dictionary<string, int> washIndex = new Dictionary<string, int>()
+        {
+            {"machinewashpermanentpress", 0},{"permanentpress", 0},{"stillusewater", 0},
+
+            {"machinewashgentleordelicate", 1},{"machinewashgentle", 1},{"what", 1},
+            {"machinewashdelicate", 1},{"gentle", 1},{"delicate", 1},
+
+            {"handwash", 2},{"nodontputyourhandsin", 2},
+
+            {"donotwash", 3},{"dontwash", 3},{"dontwashever", 3},
+
+            {"30", 4},{"30c", 4},{"30°c", 4},{"80", 4},{"80f", 4},{"80°f", 4},{"1dot", 4},
+            {"30hot", 4},{"dontwashtennisballs", 4},
+
+            {"40",5 },{"40c",5 },{"40°c",5 },{"105",5 },{"105f",5 },{"105°f",5 },{"2 dot",5 },
+            {"justuse30hot",5 },{"stopit",5 },
+
+            {"50",6 },{"50c",6},{"50°c",6 },{"120",6 },{"120f",6 },{"120°f",6 },{"3dot",6 },
+            {"stop",6 },{"notennisballs",6 },
+
+            {"60",7 },{"60c",7},{"60°c",7 },{"140",7 },{"140f",7 },{"140°f",7 },{"4dot",7 },
+            {"enough",7 },{"fuckssake",7 },
+
+            {"70",8 },{"70c",8},{"70°c",8 },{"160",8 },{"160f",8 },{"160°f",8 },{"5dot",8 },
+            {"stupid",8 },{"justuse30",8 },
+
+            {"95",9 },{"95c",9},{"95°c",9 },{"200",9 },{"200f",9 },{"200°f",9 },{"6dot",9 },
+            {"why",9 },{"toomanytennisballs",9 },
+
+            {"donotwring",10 }, {"dontwring",10 }, {"nochristmascrackers",10 },
+        };
+        Dictionary<string, int> dryIndex = new Dictionary<string, int>()
+        {
+            {"tumbledry",0 }, {"noidea",0 },
+            {"lowheat",1 }, {"1dot",1 }, {"cyclops",1 },
+            {"mediumheat",2 }, {"2dot",2 }, {"what",2 },
+            {"highheat",3 }, {"3dot",3 }, {"laundryisstupid",3 },
+            {"no heat",4 }, //{"what",4 },
+            {"hangtodry",5 }, {"hangdry",5 }, {"whatthefuckisthis",5 },
+            {"dripdry",6 }, {"no",6 },
+            {"dryflat",7 }, {"noneofthisshitmakessense",7 },
+            {"dryintheshade",8 }, {"dryinshade",8 }, {"thefuck",8 },
+            {"donotdry",9 }, {"dontdry",9 }, //{"what",9 },
+            {"donottumbledry",10 }, {"donttumbledry",10 }, {"the",10 },
+            {"dry",11 }, {"fuck",11 },
+        };
+        Dictionary<string, int> ironIndex = new Dictionary<string, int>()
+        {
+            {"iron",0 }, {"is",0 },
+            {"donotiron",1 }, {"dontiron",1 }, {"happening",1 },
+            {"110",2 }, {"110c",2 }, {"110°c",2 }, {"230",2 }, {"230f",2 }, {"230°f",2 }, {"bumpercar",2 },
+            {"150",3 }, {"150c",3 }, {"150°c",3 }, {"300",3 }, {"300f",3 }, {"300°f",3 }, {"twoseatedbumpercar",3 },
+            {"200",4 }, {"200c",4 }, {"200°c",4 }, {"390",4 }, {"390f",4 }, {"390°f",4 }, {"deluxbumpercar",4 }, {"deluxebumpercar",4 },
+            {"nosteam",5 }, {"bumpercarwithnolegs",5 },
+        };
+        Dictionary<string, int> specialIndex = new Dictionary<string, int>()
+        {
+            {"bleach",0 }, {"triangle",0 },
+            {"donotbleach",1 }, {"dontbleach",1 }, {"notriangle",1 },
+            {"nochlorine",2 }, {"nochlorinebleach",2 }, {"nonchlorinebleach",2 }, {"thisthing",2 },
+            {"dryclean",3 }, {"zero",3 },
+            {"anysolvent",4 }, {"apathy",4 },
+            {"anysolventexcepttetrachlorethylene",5 }, {"notetrachlorethylene",5 }, {"notetrachlore",5 }, {"pinks",5 },
+            {"petroleumsolventonly",6 }, {"petroleumonly",6 }, {"frenchclothes",6 },
+            {"wetcleaning",7 }, {"igiveup",7 },
+            {"donotdryclean",8 }, {"dontdryclean", 8 },
+            {"shortcycle",9 },
+            {"reducedmoisture",10 }, {"reducedmoist",10 },
+            {"lowheat",11 },
+            {"nosteamfinishing",12 }, { "nosteamfinish",12},
+        };
+
+        string[] commands = new string[] { "set wash ", "set dry ", "set iron ", "set special " };
+        string[] debuglog = new[] { "Wash", "Dry", "Ironing", "Special" };
+        int[] targetValues = new[] { LeftKnobPos, RightKnobPos, IroningTextPos, SpecialTextPos };
+        int[] currentValues = new[] {LeftKnobPos, RightKnobPos, IroningTextPos, SpecialTextPos};
+        string[][] texts = new[] { WashingText, DryingText, IroningText, SpecialText };
+        Dictionary<string, int>[] Indexes = new[] { washIndex, dryIndex, ironIndex, specialIndex };
+
+        command = command.ToLowerInvariant();
+        if (command == "insert coin")
+        {
+            yield return "Inserting the coin";
+            Debug.LogFormat("[Laundry TwitchPlays #{0}] - Inserting the coin - {1}", MyModuleId, command);
+            yield return Coinslot;
+            yield return new WaitForSeconds(0.1f);
+            yield return Coinslot;
+            yield break;
+        }
+
+        if (command.StartsWith("set all "))
+        {
+            command = command.Substring(8).Replace(" ", "").Replace("'", "");
+            string[] split = command.Split(new[] {","}, StringSplitOptions.None);
+            bool[] setAllValid = new bool[] {true, true, true, true};
+            if (split.Length != 4)
+            {
+                Debug.LogFormat(
+                    "[Laundry TwitchPlays #{0}] - IRC command \"set all\" failed validation. Expected 4 parameters, got {2} parameters. \"{1}\"",
+                    MyModuleId, command, split.Length);
+                yield break;
+            }
+
+            for (var i = 0; i < commands.Length; i++)
+            {
+                if (split[i] != "" && !Indexes[i].TryGetValue(split[i].Replace("-", ""), out targetValues[i]) && !int.TryParse(split[i],out targetValues[i]))
+                    setAllValid[i] = false;
+                else
+                {
+                    targetValues[i] %= texts[i].Length;
+                    if (targetValues[i] < 0) targetValues[i] += texts[i].Length;
+                }
+            }
+
+            if (!setAllValid[0] || !setAllValid[1] || !setAllValid[2] || !setAllValid[3])
+            {
+                Debug.LogFormat(
+                    "[Laundry TwitchPlays #{0}] - IRC command \"set all\" parameters not valid. Validation results: Washing = {2}, Drying = {3}, Ironing = {4}, Special = {5}.  Command Sent: \"{1}\"",
+                    MyModuleId, command,
+                    setAllValid[0] ? "Passed" : "Failed", setAllValid[1] ? "Passed" : "Failed",
+                    setAllValid[2] ? "Passed" : "Failed", setAllValid[3] ? "Passed" : "Failed");
+                yield break;
+            }
+
+            Debug.LogFormat("[Laundry TwitchPlays #{0}] - Setting Everything - {1}", MyModuleId, command);
+            for (var i = 0; i < commands.Length; i++)
+            {
+                Debug.LogFormat("[Laundry TwitchPlays #{0}] - Setting {2} to {3} - {1}", MyModuleId, command, debuglog[i], texts[i][targetValues[i]]);
+            }
+        }
+        else
+        {
+            for (var i = 0; i <= commands.Length; i++)
+            {
+                if (i == commands.Length)
+                {
+                    Debug.LogFormat("[Laundry TwitchPlays #{0}] - IRC command not parsed: {1}", MyModuleId, command);
+                    yield break;
+                }
+
+                if (command.StartsWith(commands[i]))
+                {
+                    command = command.Substring(commands[i].Length).Replace(" ", "").Replace("'", "");
+                    if (!Indexes[i].TryGetValue(command.Replace("-", ""), out targetValues[i]) && !int.TryParse(command, out targetValues[i]))
+                    {
+                        Debug.LogFormat("[Laundry TwitchPlays #{0}] - IRC command \"{2}\" parameter not valid. - {1}", MyModuleId, command, commands[i]);
+                        yield break;
+                    }
+
+                    targetValues[i] %= texts[i].Length;
+                    if (targetValues[i] < 0) targetValues[i] += texts[i].Length;
+                    Debug.LogFormat("[Laundry TwitchPlays #{0}] - Setting {2} to {3} - {1}", MyModuleId, command, debuglog[i], texts[i][targetValues[i]]);
+                    break;
+                }
+            }
+        }
+
+        bool allSame = true;
+        for (int i = 0; i < commands.Length && allSame; i++)
+        {
+            allSame &= targetValues[i] == currentValues[i];
+        }
+
+        if(allSame)
+        {
+            Debug.LogFormat("[Laundry TwitchPlays #{0}] - Laundry already set to desired values", MyModuleId);
+            yield break;
+        }
+
+        yield return "Doing the Laundry";
+        while (targetValues[0] != LeftKnobPos)
+        {
+            yield return Knobs[0];
+            yield return new WaitForSeconds(0.1f);
+            yield return Knobs[0];
+        }
+        while (targetValues[1] != RightKnobPos)
+        {
+            yield return Knobs[1];
+            yield return new WaitForSeconds(0.1f);
+            yield return Knobs[1];
+        }
+        while (targetValues[2] != IroningTextPos)
+        {
+            int direction = (targetValues[2] < IroningTextPos) ? 0 : 1;
+            yield return SlidersTop[direction];
+            yield return new WaitForSeconds(0.1f);
+            yield return SlidersTop[direction];
+        }
+        while (targetValues[3] != SpecialTextPos)
+        {
+            int direction = (targetValues[3] < SpecialTextPos) ? 0 : 1;
+            yield return SlidersBottom[direction];
+            yield return new WaitForSeconds(0.1f);
+            yield return SlidersBottom[direction];
+        }
     }
 
    
