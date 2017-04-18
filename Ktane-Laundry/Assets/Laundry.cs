@@ -317,6 +317,7 @@ public class Laundry : MonoBehaviour
     //be interrupted by strikes caused by other modules.
     IEnumerator ProcessTwitchCommand(string command)
     {
+        string rawCommand = command;
         Dictionary<string, int> washIndex = new Dictionary<string, int>()
         {
             {"machinewashpermanentpress", 0},{"permanentpress", 0},{"stillusewater", 0},
@@ -388,6 +389,9 @@ public class Laundry : MonoBehaviour
             {"lowheat",11 },
             {"nosteamfinishing",12 }, { "nosteamfinish",12},
         };
+        //Joke messages referenced from https://9gag.com/gag/a0LQePL/a-simple-guide-to-washing-machine-symbols
+        //Not all of the symbols can be accessed this way, and if your global banned words filter is on,
+        //a few of the symbols won't be accessable by their joke names that contain swear words.
 
         string[] commands = new string[] { "set wash ", "set dry ", "set iron ", "set special " };
         string[] debuglog = new[] { "Wash", "Dry", "Ironing", "Special" };
@@ -400,7 +404,7 @@ public class Laundry : MonoBehaviour
         if (command == "insert coin")
         {
             yield return "Inserting the coin";
-            Debug.LogFormat("[Laundry TwitchPlays #{0}] - Inserting the coin - {1}", MyModuleId, command);
+            Debug.LogFormat("[Laundry TwitchPlays #{0}] - Inserting the coin - {1}", MyModuleId, rawCommand);
             yield return Coinslot;
             yield return new WaitForSeconds(0.1f);
             yield return Coinslot;
@@ -416,7 +420,7 @@ public class Laundry : MonoBehaviour
             {
                 Debug.LogFormat(
                     "[Laundry TwitchPlays #{0}] - IRC command \"set all\" failed validation. Expected 4 parameters, got {2} parameters. \"{1}\"",
-                    MyModuleId, command, split.Length);
+                    MyModuleId, rawCommand, split.Length);
                 yield break;
             }
 
@@ -435,16 +439,16 @@ public class Laundry : MonoBehaviour
             {
                 Debug.LogFormat(
                     "[Laundry TwitchPlays #{0}] - IRC command \"set all\" parameters not valid. Validation results: Washing = {2}, Drying = {3}, Ironing = {4}, Special = {5}.  Command Sent: \"{1}\"",
-                    MyModuleId, command,
+                    MyModuleId, rawCommand,
                     setAllValid[0] ? "Passed" : "Failed", setAllValid[1] ? "Passed" : "Failed",
                     setAllValid[2] ? "Passed" : "Failed", setAllValid[3] ? "Passed" : "Failed");
                 yield break;
             }
 
-            Debug.LogFormat("[Laundry TwitchPlays #{0}] - Setting Everything - {1}", MyModuleId, command);
+            Debug.LogFormat("[Laundry TwitchPlays #{0}] - Setting Everything - {1}", MyModuleId, rawCommand);
             for (var i = 0; i < commands.Length; i++)
             {
-                Debug.LogFormat("[Laundry TwitchPlays #{0}] - Setting {2} to {3} - {1}", MyModuleId, command, debuglog[i], texts[i][targetValues[i]]);
+                Debug.LogFormat("Setting {1} to {2}", MyModuleId, debuglog[i], texts[i][targetValues[i]]);
             }
         }
         else
@@ -453,22 +457,22 @@ public class Laundry : MonoBehaviour
             {
                 if (i == commands.Length)
                 {
-                    Debug.LogFormat("[Laundry TwitchPlays #{0}] - IRC command not parsed: {1}", MyModuleId, command);
+                    Debug.LogFormat("[Laundry TwitchPlays #{0}] - IRC command not parsed: {1}", MyModuleId, rawCommand);
                     yield break;
                 }
 
                 if (command.StartsWith(commands[i]))
                 {
                     command = command.Substring(commands[i].Length).Replace(" ", "").Replace("'", "");
-                    if (!Indexes[i].TryGetValue(command.Replace("-", ""), out targetValues[i]) && !int.TryParse(command, out targetValues[i]))
+                    if (!Indexes[i].TryGetValue(command.Replace("-", ""), out targetValues[i]) && !int.TryParse(rawCommand, out targetValues[i]))
                     {
-                        Debug.LogFormat("[Laundry TwitchPlays #{0}] - IRC command \"{2}\" parameter not valid. - {1}", MyModuleId, command, commands[i]);
+                        Debug.LogFormat("[Laundry TwitchPlays #{0}] - IRC command \"{2}\" parameter not valid. - {1}", MyModuleId, rawCommand, commands[i]);
                         yield break;
                     }
 
                     targetValues[i] %= texts[i].Length;
                     if (targetValues[i] < 0) targetValues[i] += texts[i].Length;
-                    Debug.LogFormat("[Laundry TwitchPlays #{0}] - Setting {2} to {3} - {1}", MyModuleId, command, debuglog[i], texts[i][targetValues[i]]);
+                    Debug.LogFormat("[Laundry TwitchPlays #{0}] - Setting {2} to {3} - {1}", MyModuleId, rawCommand, debuglog[i], texts[i][targetValues[i]]);
                     break;
                 }
             }
@@ -482,7 +486,7 @@ public class Laundry : MonoBehaviour
 
         if(allSame)
         {
-            Debug.LogFormat("[Laundry TwitchPlays #{0}] - Laundry already set to desired values", MyModuleId);
+            Debug.LogFormat("Laundry already set to desired values", MyModuleId);
             yield break;
         }
 
