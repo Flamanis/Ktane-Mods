@@ -320,78 +320,70 @@ public class Laundry : MonoBehaviour
         string rawCommand = command;
         Dictionary<string, int> washIndex = new Dictionary<string, int>()
         {
-            {"machinewashpermanentpress", 0},{"permanentpress", 0},{"stillusewater", 0},
+            {"machinewashpermanentpress", 0},{"permanentpress", 0},
 
-            {"machinewashgentleordelicate", 1},{"machinewashgentle", 1},{"what", 1},
+            {"machinewashgentleordelicate", 1},{"machinewashgentle", 1},
             {"machinewashdelicate", 1},{"gentle", 1},{"delicate", 1},
 
-            {"handwash", 2},{"nodontputyourhandsin", 2},
+            {"handwash", 2},
 
-            {"donotwash", 3},{"dontwash", 3},{"dontwashever", 3},
+            {"donotwash", 3},{"dontwash", 3},
 
             {"30", 4},{"30c", 4},{"30°c", 4},{"80", 4},{"80f", 4},{"80°f", 4},{"1dot", 4},
-            {"30hot", 4},{"dontwashtennisballs", 4},
 
             {"40",5 },{"40c",5 },{"40°c",5 },{"105",5 },{"105f",5 },{"105°f",5 },{"2 dot",5 },
-            {"justuse30hot",5 },{"stopit",5 },
 
             {"50",6 },{"50c",6},{"50°c",6 },{"120",6 },{"120f",6 },{"120°f",6 },{"3dot",6 },
-            {"stop",6 },{"notennisballs",6 },
 
             {"60",7 },{"60c",7},{"60°c",7 },{"140",7 },{"140f",7 },{"140°f",7 },{"4dot",7 },
-            {"enough",7 },{"fuckssake",7 },
 
             {"70",8 },{"70c",8},{"70°c",8 },{"160",8 },{"160f",8 },{"160°f",8 },{"5dot",8 },
-            {"stupid",8 },{"justuse30",8 },
 
             {"95",9 },{"95c",9},{"95°c",9 },{"200",9 },{"200f",9 },{"200°f",9 },{"6dot",9 },
-            {"why",9 },{"toomanytennisballs",9 },
+            {"why",9 },
 
-            {"donotwring",10 }, {"dontwring",10 }, {"nochristmascrackers",10 },
+            {"donotwring",10 }, {"dontwring",10 },
         };
         Dictionary<string, int> dryIndex = new Dictionary<string, int>()
         {
-            {"tumbledry",0 }, {"0dot",1}, {"0dots",1}, {"noidea",0 },
-            {"lowheat",1 }, {"1dot",1 }, {"cyclops",1 },
-            {"mediumheat",2 }, {"2dot",2 },{"2dots",2 }, {"what",2 },
-            {"highheat",3 }, {"3dot",3 },{"3dots",3 }, {"laundryisstupid",3 },
-            {"no heat",4 }, //{"what",4 },
-            {"hangtodry",5 }, {"hangdry",5 }, {"whatthefuckisthis",5 },
-            {"dripdry",6 }, {"no",6 },
-            {"dryflat",7 }, {"noneofthisshitmakessense",7 },
-            {"dryintheshade",8 }, {"dryinshade",8 }, {"thefuck",8 },
-            {"donotdry",9 }, {"dontdry",9 }, //{"what",9 },
-            {"donottumbledry",10 }, {"donttumbledry",10 }, {"the",10 },
-            {"dry",11 }, {"fuck",11 },
+            {"tumbledry",0 }, {"0dot",1}, {"0dots",1},
+            {"lowheat",1 }, {"1dot",1 },
+            {"mediumheat",2 }, {"2dot",2 },{"2dots",2 },
+            {"highheat",3 }, {"3dot",3 },{"3dots",3 },
+            {"no heat",4 },
+            {"hangtodry",5 }, {"hangdry",5 },
+            {"dripdry",6 },
+            {"dryflat",7 },
+            {"dryintheshade",8 }, {"dryinshade",8 },,
+            {"donotdry",9 }, {"dontdry",9 },,
+            {"donottumbledry",10 }, {"donttumbledry",10 },
+            {"dry",11 },
         };
         Dictionary<string, int> ironIndex = new Dictionary<string, int>()
         {
             {"iron",0 }, {"is",0 },
-            {"donotiron",1 }, {"dontiron",1 }, {"happening",1 },
-            {"110",2 }, {"110c",2 }, {"110°c",2 }, {"230",2 }, {"230f",2 }, {"230°f",2 }, {"bumpercar",2 },
-            {"150",3 }, {"150c",3 }, {"150°c",3 }, {"300",3 }, {"300f",3 }, {"300°f",3 }, {"twoseatedbumpercar",3 },
-            {"200",4 }, {"200c",4 }, {"200°c",4 }, {"390",4 }, {"390f",4 }, {"390°f",4 }, {"deluxbumpercar",4 }, {"deluxebumpercar",4 },
-            {"nosteam",5 }, {"bumpercarwithnolegs",5 },
+            {"donotiron",1 }, {"dontiron",1 },
+            {"110",2 }, {"110c",2 }, {"110°c",2 }, {"230",2 }, {"230f",2 }, {"230°f",2 },
+            {"150",3 }, {"150c",3 }, {"150°c",3 }, {"300",3 }, {"300f",3 }, {"300°f",3 },
+            {"200",4 }, {"200c",4 }, {"200°c",4 }, {"390",4 }, {"390f",4 }, {"390°f",4 },
+            {"nosteam",5 },
         };
         Dictionary<string, int> specialIndex = new Dictionary<string, int>()
         {
-            {"bleach",0 }, {"triangle",0 },
-            {"donotbleach",1 }, {"dontbleach",1 }, {"notriangle",1 },
-            {"nochlorine",2 }, {"nochlorinebleach",2 }, {"nonchlorinebleach",2 }, {"thisthing",2 },
-            {"dryclean",3 }, {"zero",3 },
-            {"anysolvent",4 }, {"apathy",4 },
-            {"anysolventexcepttetrachlorethylene",5 }, {"notetrachlorethylene",5 }, {"notetrachlore",5 }, {"pinks",5 },
-            {"petroleumsolventonly",6 }, {"petroleumonly",6 }, {"frenchclothes",6 },
-            {"wetcleaning",7 }, {"igiveup",7 },
+            {"bleach",0 },
+            {"donotbleach",1 }, {"dontbleach",1 },
+            {"nochlorine",2 }, {"nochlorinebleach",2 }, {"nonchlorinebleach",2 },
+            {"dryclean",3 },
+            {"anysolvent",4 },
+            {"anysolventexcepttetrachlorethylene",5 }, {"notetrachlorethylene",5 }, {"notetrachlore",5 },
+            {"petroleumsolventonly",6 }, {"petroleumonly",6 },
+            {"wetcleaning",7 },
             {"donotdryclean",8 }, {"dontdryclean", 8 },
             {"shortcycle",9 },
             {"reducedmoisture",10 }, {"reducedmoist",10 },
             {"lowheat",11 },
             {"nosteamfinishing",12 }, { "nosteamfinish",12},
         };
-        //Joke messages referenced from https://9gag.com/gag/a0LQePL/a-simple-guide-to-washing-machine-symbols
-        //Not all of the symbols can be accessed this way, and if your global banned words filter is on,
-        //a few of the symbols won't be accessable by their joke names that contain swear words.
 
         string[] commands = new string[] { "set wash ", "set dry ", "set iron ", "set special " };
         string[] debuglog = new[] { "Wash", "Dry", "Ironing", "Special" };
