@@ -286,5 +286,32 @@ public class MorseWar : MonoBehaviour {
         module.OnActivate += OnActivate;
         audio = GetComponent<KMAudio>();
     }
-	
+
+#pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"!{0} press USSU [press submarine, supply, supply, submarine]";
+#pragma warning restore 414
+
+    List<KMSelectable> ProcessTwitchCommand(string command)
+    {
+        command = command.ToUpperInvariant().Trim();
+
+        if (!command.StartsWith("press ", StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        var buttons = new List<KMSelectable>();
+
+        for (int i = 6; i < command.Length; i++)
+        {
+            if (command[i] == ' ')
+                continue;
+            else if (command[i] == 'U')
+                buttons.Add(subButton);
+            else if (command[i] == 'S')
+                buttons.Add(supButton);
+            else
+                return null;
+        }
+
+        return buttons;
+    }
 }
