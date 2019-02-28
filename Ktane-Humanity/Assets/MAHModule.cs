@@ -36,6 +36,7 @@ public class MAHModule : MonoBehaviour {
     //Dictionary of ids to texts
     private static Dictionary<string, string> ModuleTexts = new Dictionary<string, string>() {
         { "3d maze", "Want to see this in 3D? There are special glasses for it." },
+        { "3d tunnels", "If you can't solve this bomb, just tunnel your way out."},
         { "adjacent letters", "Bomb exploded. I was adjacent to it." },
         { "adventure game", "That's okay. There will be another adventure waiting for you soon." },
         { "alphabet", "Never try tongue twisters before you learn alphabet." },
@@ -131,7 +132,7 @@ public class MAHModule : MonoBehaviour {
         { "word scramble", "You got scrambled by your own sword." },
         { "word search", "You’re searching for a word? It’s the bird." },
         { "ice cream", "I scream, you scream, but only I love it." },
-        { "the swan", "Your serial number is 4815162342."  },
+        { "the swan", "Your serial number is 4815162342." },
         { "monsplode trading cards", "Who cares about Monsplodes? Trade them away!" },
         { "neutralization", "Your goal is to neutralize this bomb." },
         { "the sun", "It's so bright! Who turned the sun on?" },
@@ -158,6 +159,17 @@ public class MAHModule : MonoBehaviour {
         { "big circle", "You blow up, you die. The big circle of life." },
         { "chord qualities", "You struck the wrong chords. Kaboom." },
         { "game of life cruel", "Life is cruel. So are games." },
+        { "unfair cipher", "Bombs are unfair. So are ciphers." },
+        { "the hexabutton", "Push the hexabutton. Galvanize." },
+        { "forget everything", "Well done. You forgot everything." },
+        { "tangrams", "You blew out the circuit. Module solved." },
+        { "radiator", "If it's hot in here, it's just you." },
+        { "discolored squares", "Well done idiot. You discolored all your squares." },
+        { "the triangle", "The Illuminati sent this bomb, and this triangle." },
+        { "tasha squeals", "Move over Simon. Tasha is here, and is better than you." },
+        { "purgatory", "When you blow up, you're going to purgatory." },
+        { "scripting", "Don't like these modules? Script a new one." },
+        { "bases", "What, do you not know the bases?" },
     };
 
     //Texts to display on white/black
