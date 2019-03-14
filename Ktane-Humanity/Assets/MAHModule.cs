@@ -30,12 +30,13 @@ public class MAHModule : MonoBehaviour {
     private const int AMOUNT_OF_CARDS = 10;
 
     //Ids arrays for each individual module separated by what type of card it is
-    private static string[] whiteModuleIds = { "wire sequence", "simon says", "maze", "memory", "needy capacitor", "who's on first", "needy vent gas", "modules against humanity", "needy knob", "morse code", "two bits", "anagrams", "word scramble", "semaphore", "colour flash", "logic", "listening", "mystic square", "crazy talk", "silly slots", "probing", "forget me not", "morsematics", "simon states", "perspective pegs", "caesar cipher", "tic tac toe", "astrology", "adventure game", "skewed slots", "blind alley", "english test", "mouse in the maze", "turn the keys", "turn the key", "tetris", "sea shells", "murder","adjacent letters","colored squares" ,"hexamaze" ,"souvenir", "simon screams", "http response", "wire placement", "coordinates", "battleship", "game of life simple", "colored switches", "the clock", "button sequences", "burglar alarm",  "backgrounds", "the stopwatch",  "the iphone", "ice cream", "the swan", "monsplode trading cards", "neutralization", "the sun", "european travel", "blind maze", "cheap checkout",};
-    private static string[] blackModuleIds = { "the button", "password", "wires", "keypad", "complicated wires", "chess", "switches", "emoji math", "letter keys", "orientation cube", "piano keys", "connection check", "cryptography", "number pad", "alphabet", "round keypad", "plumbing", "safety safe", "resistors", "microcontroller", "the gamepad", "laundry", "3d maze", "follow the leader", "friendship", "the bulb", "monsplode, fight!", "foreign exchange rates", "combination lock", "shape shift", "needy math", "lights out", "motion sense", "needy rotary phone", "needy quiz", "who's that monsplode?", "filibuster", "third base", "bitmaps", "rock-paper-scissors-l.-sp.", "square button", "broken buttons", "word search", "complicated buttons", "symbolic password", "light cycle", "text field", "double-oh", "game of life cruel", "chord qualities", "big circle", "braille", "creation", "cooking", "zoo", "hunting", "symbolic coordinates", "the moon", "mortal kombat", "faulty backgrounds",};
+    private static string[] whiteModuleIds = { "wire sequence", "simon says", "maze", "memory", "needy capacitor", "who's on first", "needy vent gas", "modules against humanity", "needy knob", "morse code", "two bits", "anagrams", "word scramble", "semaphore", "colour flash", "logic", "listening", "mystic square", "crazy talk", "silly slots", "probing", "forget me not", "morsematics", "simon states", "perspective pegs", "caesar cipher", "tic tac toe", "astrology", "adventure game", "skewed slots", "blind alley", "english test", "mouse in the maze", "turn the keys", "turn the key", "tetris", "sea shells", "murder","adjacent letters","colored squares" ,"hexamaze" ,"souvenir", "simon screams", "http response", "wire placement", "coordinates", "battleship", "game of life simple", "colored switches", "the clock", "button sequences", "burglar alarm",  "backgrounds", "the stopwatch",  "the iphone", "ice cream", "the swan", "monsplode trading cards", "neutralization", "the sun", "european travel", "blind maze", "cheap checkout", "radiator", "discolored squares", "tasha squeals", "bases", "playfair cipher",};
+    private static string[] blackModuleIds = { "the button", "password", "wires", "keypad", "complicated wires", "chess", "switches", "emoji math", "letter keys", "orientation cube", "piano keys", "connection check", "cryptography", "number pad", "alphabet", "round keypad", "plumbing", "safety safe", "resistors", "microcontroller", "the gamepad", "laundry", "3d maze", "follow the leader", "friendship", "the bulb", "monsplode, fight!", "foreign exchange rates", "combination lock", "shape shift", "needy math", "lights out", "motion sense", "needy rotary phone", "needy quiz", "who's that monsplode?", "filibuster", "third base", "bitmaps", "rock-paper-scissors-l.-sp.", "square button", "broken buttons", "word search", "complicated buttons", "symbolic password", "light cycle", "text field", "double-oh", "game of life cruel", "chord qualities", "big circle", "braille", "creation", "cooking", "zoo", "hunting", "symbolic coordinates", "the moon", "mortal kombat", "faulty backgrounds", "unfair cipher", "forget everything", "tangrams", "purgatory", "scripting", "subscribe to pewdiepie", "3d tunnels", "101 dalmatians"};
 
     //Dictionary of ids to texts
     private static Dictionary<string, string> ModuleTexts = new Dictionary<string, string>() {
         { "3d maze", "Want to see this in 3D? There are special glasses for it." },
+        { "3d tunnels", "If you can't solve this bomb, just tunnel your way out."},
         { "adjacent letters", "Bomb exploded. I was adjacent to it." },
         { "adventure game", "That's okay. There will be another adventure waiting for you soon." },
         { "alphabet", "Never try tongue twisters before you learn alphabet." },
@@ -131,7 +132,7 @@ public class MAHModule : MonoBehaviour {
         { "word scramble", "You got scrambled by your own sword." },
         { "word search", "You’re searching for a word? It’s the bird." },
         { "ice cream", "I scream, you scream, but only I love it." },
-        { "the swan", "Your serial number is 4815162342."  },
+        { "the swan", "Your serial number is 4815162342." },
         { "monsplode trading cards", "Who cares about Monsplodes? Trade them away!" },
         { "neutralization", "Your goal is to neutralize this bomb." },
         { "the sun", "It's so bright! Who turned the sun on?" },
@@ -158,6 +159,20 @@ public class MAHModule : MonoBehaviour {
         { "big circle", "You blow up, you die. The big circle of life." },
         { "chord qualities", "You struck the wrong chords. Kaboom." },
         { "game of life cruel", "Life is cruel. So are games." },
+        { "unfair cipher", "Bombs are unfair. So are ciphers." },
+        { "the hexabutton", "Push the hexabutton. Galvanize." },
+        { "forget everything", "Well done. You forgot everything." },
+        { "tangrams", "You blew out the circuit. Module solved." },
+        { "radiator", "If it's hot in here, it's just you." },
+        { "discolored squares", "Well done idiot. You discolored all your squares." },
+        { "the triangle", "The Illuminati sent this bomb, and this triangle." },
+        { "tasha squeals", "Move over Simon. Tasha is here, and is better than you." },
+        { "purgatory", "When you blow up, you're going to purgatory." },
+        { "scripting", "Don't like these modules? Script a new one." },
+        { "bases", "What, do you not know the bases?" },
+        { "playfair cipher", "This bomb doesn't play fair." },
+        { "subscribe to pewdiepie", "Subscribe to pewdiepie. This urination match has gone on long enough." },
+        { "101 dalmatians", "Spot the 101 differences!" }
     };
 
     //Texts to display on white/black
