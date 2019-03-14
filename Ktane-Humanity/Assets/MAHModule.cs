@@ -172,7 +172,7 @@ public class MAHModule : MonoBehaviour {
         { "bases", "What, do you not know the bases?" },
         { "playfair cipher", "This bomb doesn't play fair." },
         { "subscribe to pewdiepie", "Subscribe to pewdiepie. This urination match has gone on long enough." },
-        { "101 dalmatians", "Spot the difference!" }
+        { "101 dalmatians", "Spot the 101 differences!" }
     };
 
     //Texts to display on white/black
